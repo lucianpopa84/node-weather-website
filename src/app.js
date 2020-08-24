@@ -1,7 +1,7 @@
 const path = require('path');
 const express = require('express');
 const hbs = require('hbs');
-const geocode = require('./utils/geocode');
+const { geocode, revGeocode } = require('./utils/geocode');
 const forecast = require('./utils/forecast');
 
 const app = express();
@@ -42,30 +42,53 @@ app.get('/help', (req, res) => {
 });
 
 app.get('/weather', (req, res) => {
-    if (!req.query.address) {
+    if (!req.query.address && !req.query.lat && !req.query.lon) {
         return res.send({
-            error: 'You must provide an address'
+            error: 'You must provide an address or coordinates'
         })
     } 
 
-    geocode(req.query.address, (error, { latitude, longitude, location } = {}) => {
-        if (error) {
-            return res.send({ error }); 
-        }
+    if (req.query.address) {
+        geocode(req.query.address, (error, { latitude, longitude, location } = {}) => {
+            if (error) {
+                return res.send({ error }); 
+            }
+    
+            forecast(latitude, longitude, (error, { temperature, description } = {}) => {
+                if (error) {
+                    return res.send({ error }); 
+                }
+    
+                res.send({
+                    location,
+                    temperature,
+                    description,
+                    address: req.query.address
+                });
+            });
+        })
+    } 
+    
+    if (req.query.lat && req.query.lon) {
 
-        forecast(latitude, longitude, (error, { temperature, description } = {}) => {
+        revGeocode(req.query.lon, req.query.lat, (error, { latitude, longitude, location } = {}) => {
             if (error) {
                 return res.send({ error }); 
             }
 
-            res.send({
-                location,
-                temperature,
-                description,
-                address: req.query.address
+            forecast(latitude, longitude, (error, { temperature, description } = {}) => {
+                if (error) {
+                    return res.send({ error }); 
+                }
+    
+                res.send({
+                    location,
+                    temperature,
+                    description
+                });
             });
-        });
-    })
+        })
+    }
 });
 
 app.get('/help/*', (eq, res) => {

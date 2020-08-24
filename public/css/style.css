@@ -54,3 +54,7 @@ button {
     padding: 8px;
 }
 
+button:disabled {
+    color: #666666;
+    cursor:not-allowed
+}
