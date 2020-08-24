@@ -1,8 +1,9 @@
 const request = require('request');
 
+const ACCESS_TOKEN = process.env.MAPBOX_ACCESS_TOKEN;
+const limit = 1;
+
 const geocode = (address, callback) => {
-    const ACCESS_TOKEN = 'pk.eyJ1IjoibHVjaWFucG9wYTg0IiwiYSI6ImNrYzRmYnAyMTA3NmsycnRpMDMxaW1neDQifQ.8aO0D4Bm8rINhUPXZRnmRQ';
-    const limit = 1;
     const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${ACCESS_TOKEN}&limit=${limit}`;
     request({ url, json: true }, (error, { body }) => {
         if (error) {
@@ -20,8 +21,6 @@ const geocode = (address, callback) => {
 }
 
 const revGeocode = (lat, lon, callback) => {
-    const ACCESS_TOKEN = 'pk.eyJ1IjoibHVjaWFucG9wYTg0IiwiYSI6ImNrYzRmYnAyMTA3NmsycnRpMDMxaW1neDQifQ.8aO0D4Bm8rINhUPXZRnmRQ';
-    const limit = 1;
     const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lat},${lon}.json?access_token=${ACCESS_TOKEN}&limit=${limit}`;
     request({ url, json: true }, (error, { body }) => {
         if (error) {

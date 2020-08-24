@@ -44,7 +44,7 @@ app.get('/help', (req, res) => {
 app.get('/weather', (req, res) => {
     if (!req.query.address && !req.query.lat && !req.query.lon) {
         return res.send({
-            error: 'You must provide an address or coordinates'
+            error: 'You must provide an address.'
         })
     } 
 

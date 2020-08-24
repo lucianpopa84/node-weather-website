@@ -1,7 +1,7 @@
 const request = require('request');
 
 const forecast = (latitude, longitude, callback) => {
-    const API_KEY = 'd63ceb5f49ece68788fe3090cca5271f';
+    const API_KEY = process.env.OPENWEATHERMAP_API_KEY;
     const units = 'metric';
     const time = Math.floor(Date.now()/1000); // current time
     const lang = 'en';
